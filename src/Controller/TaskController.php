@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,9 @@ class TaskController extends AbstractController
 
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll()]);
+        $user = $this->getUser();
+
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll(), 'user' => $user]);
     }
 
 
@@ -26,6 +29,12 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            $user = $this->getUser();
+            $userid = $user->getId();
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $user = $repository->findOneBy(['id' => $userid]);
+            $task->setUserCreate($user);
 
             $em->persist($task);
             $em->flush();
@@ -41,16 +50,28 @@ class TaskController extends AbstractController
 
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
+        $taskid = $task->getId();
+        $user = $this->getUser();
+        $userid = $user->getId();
+        $repository = $this->getDoctrine()->getRepository(Task::class);
+        $task = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-        $form->handleRequest($request);
+        if (!empty($task)) {
+          $form = $this->createForm(TaskType::class, $task);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+          $form->handleRequest($request);
 
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('task_list');
+                $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+                return $this->redirectToRoute('task_list');
+            }
+        }
+        else {
+          $this->addFlash("error", "Cette tâche ne vous appartient pas");
+          return $this->redirectToRoute('task_list');
         }
 
         return $this->render('task/edit.html.twig', [
@@ -73,12 +94,24 @@ class TaskController extends AbstractController
 
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
+      $taskid = $task->getId();
+      $user = $this->getUser();
+      $userid = $user->getId();
+      $repository = $this->getDoctrine()->getRepository(Task::class);
+      $task = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+      if (!empty($task)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
 
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+            return $this->redirectToRoute('task_list');
+        }
+      else {
+        $this->addFlash("error", "Cette tâche ne vous appartient pas");
         return $this->redirectToRoute('task_list');
+      }
     }
 }

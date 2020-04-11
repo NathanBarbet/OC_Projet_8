@@ -4,11 +4,12 @@
 {% block header_img %}{% endblock %}
 
 {% block body %}
-    <div class="row">
+    <div class="row justify-content-center">
         {{ form_start(form, {'action' : path('user_create')}) }}
             {{ form_widget(form) }}
 
             <button type="submit" class="btn btn-success pull-right">Ajouter</button>
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Retour</a>
         {{ form_end(form) }}
     </div>
 {% endblock %}
