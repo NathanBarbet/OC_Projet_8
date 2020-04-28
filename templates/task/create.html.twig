@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row">
+    <div class="row justify-content-center">
         {{ form_start(form, {'action' : path('task_create')}) }}
             {{ form_widget(form) }}
 
-            <button type="submit" class="btn btn-success pull-right">Ajouter</button>
+            <button type="submit" class="btn btn-success">Ajouter</button>
+            <a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches</a>
         {{ form_end(form) }}
 
-        <a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches</a>
+
     </div>
 {% endblock %}

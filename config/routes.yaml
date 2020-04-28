@@ -18,6 +18,10 @@ task_list:
   path: /tasks
   controller: App\Controller\TaskController::listAction
 
+task_list_done:
+  path: /tasks/done
+  controller: App\Controller\TaskController::listIsDoneAction
+
 task_create:
   path: /tasks/create
   controller: App\Controller\TaskController::createAction
@@ -45,6 +49,10 @@ user_create:
 user_edit:
   path: /users/{id}/edit
   controller: App\Controller\UserController::editAction
+
+user_delete:
+  path: /users/{id}/delete
+  controller: App\Controller\UserController::deleteAction
 
 
 #index:

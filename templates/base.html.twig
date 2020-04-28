@@ -15,6 +15,24 @@
 
         <!-- Custom CSS -->
         <link href="{{ asset('../public/css/shop-homepage.css') }}" rel="stylesheet">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/fonts/fontawesome-free-5.13.0-web/css/all.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/animate/animate.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/css-hamburgers/hamburgers.min.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/animsition/css/animsition.min.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/select2/select2.min.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/daterangepicker/daterangepicker.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/util.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/main.css') }}">
+        <!--===============================================================================================-->
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,29 +43,34 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
-            <div class="container">
+        <nav class="navbar navbar-light navbar-fixed-top justify-content-around" style="background-color: #e3f2fd;" role="navigation">
+            <div>
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">To Do List app</a>
+                    <a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
 
                     <img src="{{ asset('../public/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
                 </div>
+            </div>
+            <div class="">
+                {% if not app.user %}
+                <a href="{{ path('user_create') }}" class="btn btn-primary">Inscription</a>
+                {% endif %}
+
+                {% if app.user %}
+                <a href="{{ path('logout') }}" class="btn btn-danger">Se déconnecter</a>
+                {% endif %}
+
+                {% if app.user and is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
+                <a href="{{ path('user_list') }}" class="btn btn-primary">Liste des utilisateurs</a>
+                {% endif %}
+
             </div>
         </nav>
 
         <!-- Page Content -->
         <div class="container">
-            <div class="row">
-                <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
 
-                {% if app.user %}
-                <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
-                {% endif %}
-
-                {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                <a href="{{ path('login') }}" class="btn btn-success">Se connecter</a>
-                {% endif %}
-            </div>
 
             <div class="row">
                 <div class="col-md-12">
@@ -64,7 +87,7 @@
                     {% endfor %}
 
                     {% block header_title %}{% endblock %}
-                    {% block header_img %}<img class="slide-image" src="{{ asset('../public/img/todolist_homepage.jpg') }}" alt="todo list">{% endblock %}
+                    {% block header_img %}{% endblock %}
                 </div>
             </div>
 
@@ -91,7 +114,21 @@
 
         </div>
 
-        <script src="{{ asset('../public/js/jquery.js') }}"></script>
+        <script src="{{ asset('../public/vendor/jquery/jquery-3.2.1.min.js') }}"></script>
         <script src="{{ asset('../public/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('../public/fonts/fontawesome-free-5.13.0-web/js/all.css') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/animsition/js/animsition.min.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/bootstrap/js/popper.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/select2/select2.min.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/daterangepicker/moment.min.js') }}"></script>
+        	<script src="{{ asset('../public/vendor/daterangepicker/daterangepicker.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/countdowntime/countdowntime.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/js/main.js') }}"></script>
     </body>
 </html>
