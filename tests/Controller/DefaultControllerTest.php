@@ -1,18 +1,53 @@
 <?php
 
-namespace Tests\AppBundle\Controller;
+namespace tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndex()
+
+    /**
+     * @var KernelBrowser
+     */
+    public $client;
+
+    protected function setUp(): void
     {
-        $client = static::createClient();
+        $this->client = self::createClient();
+    }
 
-        $crawler = $client->request('GET', '/');
+    public function testHomepageLogout()
+    {
+        $this->client->request('GET', '/');
+        self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+    }
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
+
+    public function testHomepageLogin()
+    {
+        $this->logInUser();
+        $crawler = $this->client->request('GET', '/');
+
+        self::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertContains('/tasks/create', $crawler->filter('a')->extract(['href']));
+        self::assertContains('/tasks', $crawler->filter('a')->extract(['href']));
+    }
+
+
+    public function logInUser()
+    {
+        $session = $this->client->getContainer()->get('session');
+
+        $token = new UsernamePasswordToken('user', null, 'main', ['ROLE_USER']);
+
+        $session->set('_security_'.'main', serialize($token));
+        $session->save();
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
     }
 }

@@ -21,16 +21,4 @@ class SecurityController extends AbstractController
             'error'         => $error,
         ));
     }
-
-
-    public function loginCheck()
-    {
-        // This code is never executed.
-    }
-
-
-    public function logoutCheck()
-    {
-        // This code is never executed.
-    }
 }

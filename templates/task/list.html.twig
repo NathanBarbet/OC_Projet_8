@@ -28,10 +28,10 @@
                         </button>
                     </form>
                     <form class="border p-2 bd-highlight" action="{{ path('task_edit', {'id' : task.id }) }}">
-                        <button><i class="fas fa-edit btn-sm"></i></button>
+                        <button id="edit"><i class="fas fa-edit btn-sm"></i></button>
                     </form>
                     <form class="border p-2 bd-highlight" action="{{ path('task_delete', {'id' : task.id }) }}">
-                        <button><i class="fas fa-trash-alt btn-sm"></i></button>
+                        <button id="delete"><i class="fas fa-trash-alt btn-sm"></i></button>
                     </form>
                   {% endif %}
                 </div>

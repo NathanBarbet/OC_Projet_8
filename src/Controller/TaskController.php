@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\TaskType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class TaskController extends AbstractController
@@ -16,9 +17,15 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
 
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll(), 'user' => $user]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDone(), 'user' => $user]);
     }
 
+    public function listIsDoneAction()
+    {
+        $user = $this->getUser();
+
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDone(), 'user' => $user]);
+    }
 
     public function createAction(Request $request)
     {
@@ -53,10 +60,11 @@ class TaskController extends AbstractController
         $taskid = $task->getId();
         $user = $this->getUser();
         $userid = $user->getId();
+        $roles = $user->getRoles();
         $repository = $this->getDoctrine()->getRepository(Task::class);
-        $task = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
+        $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-        if (!empty($task)) {
+        if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
           $form = $this->createForm(TaskType::class, $task);
 
           $form->handleRequest($request);
@@ -86,9 +94,18 @@ class TaskController extends AbstractController
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $value = $task->getIsDone();
 
-        return $this->redirectToRoute('task_list');
+        if ($value == '0') {
+          $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme non faite.', $task->getTitle()));
+
+          return $this->redirectToRoute('task_list');
+        }
+        elseif ($value == '1') {
+          $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+
+          return $this->redirectToRoute('task_list_done');
+        }
     }
 
 
@@ -97,10 +114,11 @@ class TaskController extends AbstractController
       $taskid = $task->getId();
       $user = $this->getUser();
       $userid = $user->getId();
+      $roles = $user->getRoles();
       $repository = $this->getDoctrine()->getRepository(Task::class);
-      $task = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
+      $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-      if (!empty($task)) {
+      if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
             $em = $this->getDoctrine()->getManager();
             $em->remove($task);
             $em->flush();
