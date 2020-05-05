@@ -16,15 +16,17 @@ class TaskController extends AbstractController
     public function listAction()
     {
         $user = $this->getUser();
-
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDone(), 'user' => $user]);
+        $titre = 'Tâches à faire';
+        $variables['url'] = $_SERVER['REQUEST_URI'];
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
     }
 
     public function listIsDoneAction()
     {
         $user = $this->getUser();
-
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDone(), 'user' => $user]);
+        $titre = 'Tâches terminer';
+        $variables['url'] = $_SERVER['REQUEST_URI'];
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
     }
 
     public function createAction(Request $request)
@@ -55,30 +57,40 @@ class TaskController extends AbstractController
     }
 
 
-    public function editAction(Task $task, Request $request)
+    public function editAction($id, Request $request)
     {
-        $taskid = $task->getId();
-        $user = $this->getUser();
-        $userid = $user->getId();
-        $roles = $user->getRoles();
-        $repository = $this->getDoctrine()->getRepository(Task::class);
-        $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
+      $repository = $this->getDoctrine()->getRepository(Task::class);
+      $task = $repository->findOneBy(['id' => $id]);
 
-        if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
-          $form = $this->createForm(TaskType::class, $task);
+        if (!empty($task)) {
+          $taskid = $task->getId();
+          $user = $this->getUser();
+          $userid = $user->getId();
+          $roles = $user->getRoles();
+          $repository = $this->getDoctrine()->getRepository(Task::class);
+          $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-          $form->handleRequest($request);
+          if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
+            $form = $this->createForm(TaskType::class, $task);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->getDoctrine()->getManager()->flush();
+            $form->handleRequest($request);
 
-                $this->addFlash('success', 'La tâche a bien été modifiée.');
+              if ($form->isSubmitted() && $form->isValid()) {
+                  $this->getDoctrine()->getManager()->flush();
 
-                return $this->redirectToRoute('task_list');
-            }
+                  $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+                  return $this->redirectToRoute('task_list');
+              }
+          }
+          else {
+            $this->addFlash('error', 'Cette tâche ne vous appartient pas');
+            return $this->redirectToRoute('task_list');
+          }
         }
+
         else {
-          $this->addFlash("error", "Cette tâche ne vous appartient pas");
+          $this->addFlash('error', 'Cette tâche n\'éxiste pas');
           return $this->redirectToRoute('task_list');
         }
 
@@ -89,8 +101,12 @@ class TaskController extends AbstractController
     }
 
 
-    public function toggleTaskAction(Task $task)
+    public function toggleTaskAction($id)
     {
+      $repository = $this->getDoctrine()->getRepository(Task::class);
+      $task = $repository->findOneBy(['id' => $id]);
+
+      if (!empty($task)) {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
@@ -99,36 +115,50 @@ class TaskController extends AbstractController
         if ($value == '0') {
           $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme non faite.', $task->getTitle()));
 
-          return $this->redirectToRoute('task_list');
+          return $this->redirectToRoute('task_list_done');
         }
         elseif ($value == '1') {
           $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
-          return $this->redirectToRoute('task_list_done');
+          return $this->redirectToRoute('task_list');
         }
+      }
+      else {
+        $this->addFlash('error', 'Cette tâche n\'éxiste pas');
+        return $this->redirectToRoute('task_list');
+      }
     }
 
 
-    public function deleteTaskAction(Task $task)
+    public function deleteTaskAction($id)
     {
-      $taskid = $task->getId();
-      $user = $this->getUser();
-      $userid = $user->getId();
-      $roles = $user->getRoles();
       $repository = $this->getDoctrine()->getRepository(Task::class);
-      $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
+      $task = $repository->findOneBy(['id' => $id]);
 
-      if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($task);
-            $em->flush();
+      if (!empty($task)) {
+        $taskid = $task->getId();
+        $user = $this->getUser();
+        $userid = $user->getId();
+        $roles = $user->getRoles();
+        $repository = $this->getDoctrine()->getRepository(Task::class);
+        $taskvalid = $repository->findOneBy(['id' => $taskid, 'userCreate' => $userid]);
 
-            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        if (!empty($taskvalid) or $roles[0] == 'ROLE_ADMIN') {
+              $em = $this->getDoctrine()->getManager();
+              $em->remove($task);
+              $em->flush();
 
-            return $this->redirectToRoute('task_list');
+              $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+              return $this->redirectToRoute('task_list');
+          }
+        else {
+          $this->addFlash("error", "Cette tâche ne vous appartient pas");
+          return $this->redirectToRoute('task_list');
         }
+      }
       else {
-        $this->addFlash("error", "Cette tâche ne vous appartient pas");
+        $this->addFlash('error', 'Cette tâche n\'éxiste pas');
         return $this->redirectToRoute('task_list');
       }
     }

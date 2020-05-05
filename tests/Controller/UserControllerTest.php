@@ -37,7 +37,7 @@ class UserControllerTest extends WebTestCase
     public function testAdminDisplayListUser()
     {
         $username = 'username';
-        $password = 'test123456';
+        $password = 'password';
         $this->logIn($username, $password);
         $crawler = $this->client->request('GET', '/users');
 
@@ -58,7 +58,7 @@ class UserControllerTest extends WebTestCase
     public function testAccessDeniedForUserPageListUser()
     {
         $username = 'test';
-        $password = 'test123456';
+        $password = 'password';
         $this->logIn($username, $password);
         $this->client->request('GET', '/users');
 
@@ -68,19 +68,19 @@ class UserControllerTest extends WebTestCase
     public function testEditUserWithoutAuth()
     {
         $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneByUsername('username');
-        $this->client->request('GET', '/users/'.$user->getId().'/edit');
+        $this->client->request('GET', '/users/edit/'.$user->getId().'');
         self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
 
         $username = 'test';
-        $password = 'test123456';
+        $password = 'password';
         $this->logIn($username, $password);
-        $this->client->request('GET', '/users/'.$user->getId().'/edit');
+        $this->client->request('GET', '/users/edit/'.$user->getId().'');
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
         $username = 'username';
-        $password = 'test123456';
+        $password = 'password';
         $this->logIn($username, $password);
-        $this->client->request('GET', '/users/'.$user->getId().'/edit');
+        $this->client->request('GET', '/users/edit/'.$user->getId().'');
         self::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
@@ -119,13 +119,13 @@ class UserControllerTest extends WebTestCase
 
     public function testDeleteUser()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
 
         $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneByUsername('userTestCreate');
 
         $crawler = $this->client->request('GET', '/users');
 
-        $this->client->request('GET', '/users/'.$user->getId().'/delete');
+        $this->client->request('GET', '/users/delete/'.$user->getId().'');
         $crawler = $this->client->followRedirect();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
