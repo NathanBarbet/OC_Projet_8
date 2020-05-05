@@ -34,6 +34,11 @@ public function __construct(UserPasswordEncoderInterface $encoder)
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+          $username = $user->getUsername();
+          $repository = $this->getDoctrine()->getRepository(User::class);
+          $usernameUsed = $repository->findOneBy(['username' => $username]);
+
+          if (empty($usernameUsed)) {
             $em = $this->getDoctrine()->getManager();
 
             $password = $this->encoder->encodePassword($user, $user->getPassword());
@@ -44,47 +49,56 @@ public function __construct(UserPasswordEncoderInterface $encoder)
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+            $this->addFlash('success', 'L\'utilisateur a bien été ajouté.');
 
             return $this->redirectToRoute('homepage');
+          }
+
+          else {
+            $this->addFlash('error', 'Ce nom d\'utilisateur est déjà utiliser');
+            return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+          }
+
         }
 
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
 
-    public function editAction(User $user, Request $request)
+    public function editAction($id, Request $request)
     {
-        $form = $this->createForm(UserEditType::class, $user);
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $user = $repository->findOneBy(['id' => $id]);
 
-        $form->handleRequest($request);
+        if (!empty($user)) {
+          $form = $this->createForm(UserEditType::class, $user);
+          $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $this->encoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $password = $this->encoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($password);
 
-            $this->getDoctrine()->getManager()->flush();
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', "L'utilisateur a bien été modifié");
+                $this->addFlash('success', "L'utilisateur a bien été modifié");
 
+                return $this->redirectToRoute('user_list');
+            }
+          }
+          else {
+            $this->addFlash('error', 'Cet utilisateur n\'existe pas');
             return $this->redirectToRoute('user_list');
-        }
-
+          }
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 
-    public function deleteAction(User $userDelete)
+    public function deleteAction($id)
     {
-      $userDeleteId = $userDelete->getId();
-      $user = $this->getUser();
-      $userid = $user->getId();
-      $roles = $user->getRoles();
       $repository = $this->getDoctrine()->getRepository(User::class);
-      $userDeleteValid = $repository->findOneBy(['id' => $userDeleteId]);
-
-      if (!empty($userDeleteValid)) {
+      $user = $repository->findOneBy(['id' => $id]);
+      if (!empty($user)) {
             $em = $this->getDoctrine()->getManager();
-            $em->remove($userDelete);
+            $em->remove($user);
             $em->flush();
 
             $this->addFlash('success', 'L\'utilisateur a bien été supprimée.');
@@ -92,7 +106,7 @@ public function __construct(UserPasswordEncoderInterface $encoder)
             return $this->redirectToRoute('user_list');
         }
       else {
-        $this->addFlash("error", "Cet utilisateur n\'existe pas");
+        $this->addFlash('error', 'Cet utilisateur n\'existe pas');
         return $this->redirectToRoute('user_list');
       }
     }

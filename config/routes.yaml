@@ -27,15 +27,15 @@ task_create:
   controller: App\Controller\TaskController::createAction
 
 task_edit:
-  path: /tasks/{id}/edit
+  path: /tasks/edit/{id}
   controller: App\Controller\TaskController::editAction
 
 task_toggle:
-  path: /tasks/{id}/toggle
+  path: /tasks/toggle/{id}
   controller: App\Controller\TaskController::toggleTaskAction
 
 task_delete:
-  path: /tasks/{id}/delete
+  path: /tasks/delete/{id}
   controller: App\Controller\TaskController::deleteTaskAction
 
 user_list:
@@ -47,11 +47,11 @@ user_create:
   controller: App\Controller\UserController::createAction
 
 user_edit:
-  path: /users/{id}/edit
+  path: /users/edit/{id}
   controller: App\Controller\UserController::editAction
 
 user_delete:
-  path: /users/{id}/delete
+  path: /users/delete/{id}
   controller: App\Controller\UserController::deleteAction
 
 

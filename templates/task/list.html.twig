@@ -3,7 +3,14 @@
 {% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_content.jpg') }}" alt="todo list">{% endblock %}
 
 {% block body %}
+    <h2>{{ titre }}</h2>
+    </br>
     <a href="{{ path('task_create') }}" class="btn btn-info mb-5">Créer une tâche</a>
+      {% if '/done' in url %}
+        <a href="{{ path('task_list') }}" class="btn btn-success mb-5">Consulter la liste des tâches à faire</a>
+      {% else %}
+        <a href="{{ path('task_list_done') }}" class="btn btn-success mb-5">Consulter la liste des tâches terminées</a>
+      {% endif %}
     <div class="row">
         {% for task in tasks %}
         <div class="border col-sm-4 col-lg-4 col-md-4">
@@ -27,11 +34,13 @@
                             {% endif %}
                         </button>
                     </form>
+                    {% if not task.isDone %}
                     <form class="border p-2 bd-highlight" action="{{ path('task_edit', {'id' : task.id }) }}">
                         <button id="edit"><i class="fas fa-edit btn-sm"></i></button>
                     </form>
-                    <form class="border p-2 bd-highlight" action="{{ path('task_delete', {'id' : task.id }) }}">
-                        <button id="delete"><i class="fas fa-trash-alt btn-sm"></i></button>
+                    {% endif %}
+                    <form class="border p-2 bd-highlight">
+                        <a href="" data-toggle="modal" data-target="#delete{{ task.id }}"><i class="fas fa-trash-alt btn-sm" style="color :#000000"></i></a>
                     </form>
                   {% endif %}
                 </div>
@@ -42,5 +51,20 @@
                 Il n'y a pas encore de tâche enregistrée.
             </div>
         {% endfor %}
+        {% for task in tasks %}
+          <div class="modal fade" id="delete{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="Modaldelete" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  Etes vous sur de vouloir supprimer cette tâche ?
+                </div>
+                <div class="modal-footer">
+                  <a href="{{ path('task_delete', {'id' : task.id }) }}"<button type="button" class="btn btn-danger" >Supprimer</button></a>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                </div>
+              </div>
+            </div>
+          </div>
+       {% endfor %}
     </div>
 {% endblock %}

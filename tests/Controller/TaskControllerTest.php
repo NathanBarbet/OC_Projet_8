@@ -24,20 +24,22 @@ class TaskControllerTest extends WebTestCase
 
     public function testClickButtonListTasksToDo()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
         $crawler = $this->client->request('GET', '/');
+        $_SERVER['REQUEST_URI'] = 'http://localhost/P8/public/tasks';
 
         $link = $crawler->selectLink('Consulter la liste des tâches à faire')->link();
         $crawler = $this->client->click($link);
-
+  
         self::assertContains('/logout', $crawler->filter('a')->extract(['href']));
         self::assertContains('/tasks/create', $crawler->filter('a')->extract(['href']));
     }
 
     public function testClickButtonListTasksDone()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
         $crawler = $this->client->request('GET', '/');
+        $_SERVER['REQUEST_URI'] = 'http://localhost/P8/public/tasks/done';
 
         $link = $crawler->selectLink('Consulter la liste des tâches terminées')->link();
         $crawler = $this->client->click($link);
@@ -48,8 +50,9 @@ class TaskControllerTest extends WebTestCase
 
     public function testCreateTask()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
         $crawler = $this->client->request('GET', '/');
+        $_SERVER['REQUEST_URI'] = 'http://localhost/P8/public/tasks';
 
         $link = $crawler->selectLink('Créer une nouvelle tâche')->link();
         $crawler = $this->client->click($link);
@@ -103,13 +106,13 @@ class TaskControllerTest extends WebTestCase
 
     public function testEditTask()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
 
         $task = $this->getContainer()->get('doctrine')->getRepository(Task::class)->findOneByTitle('taskEdit');
 
         $crawler = $this->client->request('GET', '/tasks');
 
-        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
+        $crawler = $this->client->request('GET', '/tasks/edit/'.$task->getId().'');
 
         $form = $crawler->selectButton('Modifier')->form();
         $form['task[title]'] = 'editedTask';
@@ -124,14 +127,14 @@ class TaskControllerTest extends WebTestCase
 
     public function testToggleTask()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
 
         $task = $this->getContainer()->get('doctrine')->getRepository(Task::class)->findOneByTitle('taskToggle');
 
         $crawler = $this->client->request('GET', '/tasks');
 
-        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/toggle');
-        self::assertNotContains('/tasks/'.$task->getId().'/toggle', $crawler->filter('a')->extract(['href']));
+        $crawler = $this->client->request('GET', '/tasks/toggle/'.$task->getId().'');
+        self::assertNotContains('/tasks/toggle/'.$task->getId().'', $crawler->filter('a')->extract(['href']));
 
         $crawler = $this->client->request('GET', '/tasks/1');
     }
@@ -139,13 +142,13 @@ class TaskControllerTest extends WebTestCase
 
     public function testDeleteTask()
     {
-        $this->logIn('username', 'test123456');
+        $this->logIn('username', 'password');
 
         $task = $this->getContainer()->get('doctrine')->getRepository(Task::class)->findOneByTitle('taskCreated');
 
         $crawler = $this->client->request('GET', '/tasks');
 
-        $this->client->request('GET', '/tasks/'.$task->getId().'/delete');
+        $this->client->request('GET', '/tasks/delete/'.$task->getId().'');
         $crawler = $this->client->followRedirect();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -157,7 +160,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/tasks');
 
-        $this->client->request('GET', '/tasks/'.$task->getId().'/delete');
+        $this->client->request('GET', '/tasks/delete/'.$task->getId().'');
         $crawler = $this->client->followRedirect();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -169,7 +172,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/tasks');
 
-        $this->client->request('GET', '/tasks/'.$task->getId().'/delete');
+        $this->client->request('GET', '/tasks/delete/'.$task->getId().'');
         $crawler = $this->client->followRedirect();
 
         self::assertEquals(200, $this->client->getResponse()->getStatusCode());
