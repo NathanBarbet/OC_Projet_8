@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d51698fc12c64372b66276e358b4cbf8)](https://www.codacy.com/manual/NathanBarbet/OC_Projet_8?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NathanBarbet/OC_Projet_8&amp;utm_campaign=Badge_Grade)
+
 Php version : 7.3.12
 
 Exemple : http://nathanbarbet.fr/P8/public
