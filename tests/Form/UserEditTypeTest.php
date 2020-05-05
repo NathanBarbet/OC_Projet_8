@@ -19,7 +19,7 @@ class UserEditTypeTest extends TypeTestCase
             new ValidatorExtension($validator),
         ];
     }
-    
+
     public function testSubmitValidData()
     {
         $user = new User();
@@ -41,8 +41,6 @@ class UserEditTypeTest extends TypeTestCase
         $this->assertSame('username', $user->getUsername());
         $this->assertSame('password', $user->getPassword());
         $this->assertSame('email@email.fr', $user->getEmail());
-
-        $view = $form->createView();
 
     }
 }
