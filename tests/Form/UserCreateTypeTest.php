@@ -42,7 +42,5 @@ class UserCreateTypeTest extends TypeTestCase
         $this->assertSame('password', $user->getPassword());
         $this->assertSame('email@email.fr', $user->getEmail());
 
-        $view = $form->createView();
-
     }
 }

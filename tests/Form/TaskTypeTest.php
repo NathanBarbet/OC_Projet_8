@@ -28,7 +28,5 @@ class TaskTypeTest extends TypeTestCase
           $this->assertEquals($object->getTitle(), $form->getData()['title']);
           $this->assertEquals($object->getContent(), $form->getData()['content']);
 
-          $view = $form->createView();
-
       }
   }
