@@ -24,3 +24,6 @@ Php version : 7.3.12
     password : password
     (You must modify this)
 ```
+
+## Contributing
+ [See here](https://github.com/NathanBarbet/OC_Projet_8/blob/master/CONTRIBUTE.md).
