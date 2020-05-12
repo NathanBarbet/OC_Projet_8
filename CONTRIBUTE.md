@@ -16,7 +16,6 @@ Php version : 7.3.12
 5/ Login of first admin :
     username : username
     password : password
-    (You must modify this)
 ```
 
 ## After your modifications
