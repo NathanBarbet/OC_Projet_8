@@ -8,11 +8,17 @@ login:
 
 login_check:
   path: /login_check
-  controller: App\Controller\SecurityController::loginCheck
 
 logout:
   path: /logout
-  controller: App\Controller\SecurityController::logoutCheck
+
+task_list_admin:
+  path: /admin/tasks
+  controller: App\Controller\TaskController::listAdminNotDone
+
+task_list_admin_done:
+  path: /admin/tasks/done
+  controller: App\Controller\TaskController::listAdminIsDone
 
 task_list:
   path: /tasks

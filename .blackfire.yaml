@@ -1,0 +1,7 @@
+recommendations:
+    enable_doctrine_annotations_cache:
+        enabled: false
+    disable_symfony_resource_tracking:
+        enabled: false
+    symfony.disable_debug:
+        enabled: false

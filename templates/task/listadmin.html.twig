@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block header_img %}{% endblock %}
+
+{% block header_title %}<h1>{{ titre }}</h1>{% endblock %}
+
+{% block body %}
+  {% if '/done' in url %}
+    <a href="{{ path('task_list_admin') }}" class="btn btn-success mb-5">Consulter la liste des tâches à faire</a>
+  {% else %}
+    <a href="{{ path('task_list_admin_done') }}" class="btn btn-success mb-5">Consulter la liste des tâches terminées</a>
+  {% endif %}
+    {% if tasks|length == 0 %}
+        <div class="alert alert-warning" role="alert">
+            Il n'y a pas encore de tâches.
+        </div>
+    {% else %}
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Auteur</th>
+                    <th>Date</th>
+                    <th>Titre</th>
+                    <th>Contenu</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ task.userCreate.username }}</td>
+                        <td>{{ task.createdAt|date('d-m-Y à H:i:s') }}</td>
+                        <td>{{ task.title }}</td>
+                        <td><a href="" data-toggle="modal" data-target="#see{{ task.id }}" class="btn btn-success btn-sm">Voir le contenu</a></td>
+                        <td>
+                            <a href="{{ path('task_edit', {'id' : task.id, 'url' : url}) }}" class="btn btn-success btn-sm">Edit</a>
+                            <a href="" data-toggle="modal" data-target="#delete{{ task.id }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                  {% for task in tasks %}
+                    <div class="modal fade" id="delete{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="Modaldelete" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            Etes vous sur de vouloir supprimer cette tâche ?
+                          </div>
+                          <div class="modal-footer">
+                            <a href="{{ path('task_delete', {'id' : task.id}) }}"<button type="button" class="btn btn-danger" >Supprimer</button></a>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                 {% endfor %}
+                 {% for task in tasks %}
+                   <div class="modal fade" id="see{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="Modaldelete" aria-hidden="true">
+                     <div class="modal-dialog" role="document">
+                       <div class="modal-content">
+                         <div class="modal-body">
+                           {{ task.content }}
+                         </div>
+                         <div class="modal-footer">
+                           <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
