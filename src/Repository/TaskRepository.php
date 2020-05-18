@@ -19,7 +19,31 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findNotDone()
+    public function findNotDone($userId)
+    {
+        return $this->createQueryBuilder('t')
+            ->Where('t.isDone = 0')
+            ->andWhere('t.userCreate = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('t.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findIsDone($userId)
+    {
+        return $this->createQueryBuilder('t')
+            ->Where('t.isDone = 1')
+            ->andWhere('t.userCreate = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('t.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findTaskAdminNotDone()
     {
         return $this->createQueryBuilder('t')
             ->Where('t.isDone = 0')
@@ -29,7 +53,7 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findIsDone()
+    public function findTaskAdminIsDone()
     {
         return $this->createQueryBuilder('t')
             ->Where('t.isDone = 1')

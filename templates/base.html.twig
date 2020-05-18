@@ -14,13 +14,13 @@
         <link href="{{ asset('../public/css/bootstrap.min.css') }}" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="{{ asset('../public/css/shop-homepage.css') }}" rel="stylesheet">
+        <link href="{{ asset('../public/css/shop-homepage.min.css') }}" rel="stylesheet">
         <!--===============================================================================================-->
-        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/fonts/fontawesome-free-5.13.0-web/css/all.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/fonts/fontawesome-free-5.13.0-web/css/all.min.css') }}">
         <!--===============================================================================================-->
         	<link rel="stylesheet" type="text/css" href="{{ asset('../public/fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
         <!--===============================================================================================-->
-        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/animate/animate.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/animate/animate.min.css') }}">
         <!--===============================================================================================-->
         	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/css-hamburgers/hamburgers.min.css') }}">
         <!--===============================================================================================-->
@@ -28,10 +28,11 @@
         <!--===============================================================================================-->
         	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/select2/select2.min.css') }}">
         <!--===============================================================================================-->
-        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/daterangepicker/daterangepicker.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/vendor/daterangepicker/daterangepicker.min.css') }}">
         <!--===============================================================================================-->
-        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/util.css') }}">
-        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/main.css') }}">
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/util.min.css') }}">
+        <!--===============================================================================================-->
+        	<link rel="stylesheet" type="text/css" href="{{ asset('../public/css/main.min.css') }}">
         <!--===============================================================================================-->
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -63,6 +64,7 @@
                 {% if app.user and is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
                 <a href="{{ path('user_list') }}" class="btn btn-primary">Liste des utilisateurs</a>
+                <a href="{{ path('task_list_admin') }}" class="btn btn-primary">Liste des tâches</a>
                 {% endif %}
 
             </div>
@@ -113,22 +115,22 @@
             </footer>
 
         </div>
-
+        <!--===============================================================================================-->
         <script src="{{ asset('../public/vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+        <!--===============================================================================================-->
         <script src="{{ asset('../public/js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('../public/fonts/fontawesome-free-5.13.0-web/js/all.css') }}"></script>
         <!--===============================================================================================-->
         	<script src="{{ asset('../public/vendor/animsition/js/animsition.min.js') }}"></script>
-        <!--===============================================================================================-->
-        	<script src="{{ asset('../public/vendor/bootstrap/js/popper.js') }}"></script>
         <!--===============================================================================================-->
         	<script src="{{ asset('../public/vendor/select2/select2.min.js') }}"></script>
         <!--===============================================================================================-->
         	<script src="{{ asset('../public/vendor/daterangepicker/moment.min.js') }}"></script>
-        	<script src="{{ asset('../public/vendor/daterangepicker/daterangepicker.js') }}"></script>
         <!--===============================================================================================-->
-        	<script src="{{ asset('../public/vendor/countdowntime/countdowntime.js') }}"></script>
+        	<script src="{{ asset('../public/vendor/daterangepicker/daterangepicker.min.js') }}"></script>
+        <!--===============================================================================================-->
+        	<script src="{{ asset('../public/vendor/countdowntime/countdowntime.min.js') }}"></script>
         <!--===============================================================================================-->
         	<script src="{{ asset('../public/js/main.js') }}"></script>
+        <!--===============================================================================================-->
     </body>
 </html>

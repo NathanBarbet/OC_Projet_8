@@ -41,6 +41,14 @@ class TaskTest extends TestCase
         $this->assertEquals(true, $task->isDone());
     }
 
+    public function testisDone()
+    {
+        $task = new Task();
+
+        $task->setIsDone(true);
+        $this->assertEquals(true, $task->IsDone());
+    }
+
     public function testUser()
     {
         $task = new Task();

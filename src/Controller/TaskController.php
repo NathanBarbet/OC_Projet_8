@@ -13,20 +13,38 @@ use Symfony\Component\HttpFoundation\Request;
 class TaskController extends AbstractController
 {
 
+    public function listAdminNotDone()
+    {
+        $user = $this->getUser();
+        $titre = 'Liste des tâches à faire';
+        $variables['url'] = $_SERVER['REQUEST_URI'];
+        return $this->render('task/listadmin.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findTaskAdminNotDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
+    }
+
+    public function listAdminIsDone()
+    {
+        $user = $this->getUser();
+        $titre = 'Liste des tâches terminer';
+        $variables['url'] = $_SERVER['REQUEST_URI'];
+        return $this->render('task/listadmin.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findTaskAdminIsDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
+    }
+
     public function listAction()
     {
         $user = $this->getUser();
+        $userId = $user->getId();
         $titre = 'Tâches à faire';
         $variables['url'] = $_SERVER['REQUEST_URI'];
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDone($userId), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
     }
 
     public function listIsDoneAction()
     {
         $user = $this->getUser();
+        $userId = $user->getId();
         $titre = 'Tâches terminer';
         $variables['url'] = $_SERVER['REQUEST_URI'];
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDone(), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDone($userId), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
     }
 
     public function createAction(Request $request)
@@ -35,6 +53,7 @@ class TaskController extends AbstractController
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
