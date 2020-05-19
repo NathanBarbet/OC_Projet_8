@@ -12,14 +12,6 @@ login_check:
 logout:
   path: /logout
 
-task_list_admin:
-  path: /admin/tasks
-  controller: App\Controller\TaskController::listAdminNotDone
-
-task_list_admin_done:
-  path: /admin/tasks/done
-  controller: App\Controller\TaskController::listAdminIsDone
-
 task_list:
   path: /tasks
   controller: App\Controller\TaskController::listAction

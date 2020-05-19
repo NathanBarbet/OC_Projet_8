@@ -43,7 +43,7 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findTaskAdminNotDone()
+    public function findNotDoneAdmin()
     {
         return $this->createQueryBuilder('t')
             ->Where('t.isDone = 0')
@@ -53,7 +53,7 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findTaskAdminIsDone()
+    public function findIsDoneAdmin()
     {
         return $this->createQueryBuilder('t')
             ->Where('t.isDone = 1')
