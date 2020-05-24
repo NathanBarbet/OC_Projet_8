@@ -17,10 +17,10 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         $userId = $user->getId();
-        $role = $user->getRoles();
+        $roles = $user->getRoles();
         $titre = 'Tâches à faire';
         $variables['url'] = $_SERVER['REQUEST_URI'];
-        if ($role = 'ROLE_ADMIN') {
+        if ($roles[0] == 'ROLE_ADMIN') {
           return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findNotDoneAdmin($userId), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
         }
         else {
@@ -32,10 +32,10 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         $userId = $user->getId();
-        $role = $user->getRoles();
+        $roles = $user->getRoles();
         $titre = 'Tâches terminer';
         $variables['url'] = $_SERVER['REQUEST_URI'];
-        if ($role = 'ROLE_ADMIN') {
+        if ($roles[0] == 'ROLE_ADMIN') {
           return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findIsDoneAdmin($userId), 'user' => $user, 'titre' => $titre, 'url' => $variables['url']]);
         }
         else {
